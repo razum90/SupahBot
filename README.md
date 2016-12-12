@@ -1,1 +1,1 @@
-# SupahBot
+# Disc0rdBot
