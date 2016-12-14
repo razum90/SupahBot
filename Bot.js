@@ -1,6 +1,5 @@
 var Discord = require('discord.js');
 var Bot = new Discord.Client();
-var request = require('request');
 var Helper = require('./components/helper.js');
 var Queue = require('./components/queue.js');
 var TrackHelper = require('./components/trackhelper.js');
@@ -41,7 +40,7 @@ var commands = {
   }
 };
 
-Bot.on('message', function(message) {
+Bot.on('message', message => {
   WordService.registerMessage(message);
 
   if (isBotCommand(message)) {
@@ -67,20 +66,26 @@ function doQueue(args, message) {
   }
 
   if (args.startsWith('http')) {
-    TrackHelper.getVideoFromUrl(args).then(function(track) {
+    TrackHelper.getVideoFromUrl(args).then(track => {
       Queue.add(track, message);
-    }).catch(console.error);
+    }).catch(err => {
+      message.reply(Helper.wrap(err));
+    });
   } else {
-    TrackHelper.getRandomVideo(args, 5).then(function(track) {
+    TrackHelper.getRandomTrack(args, 5).then(track => {
       Queue.add(track, message);
-    }).catch(console.error);
+    }).catch(err => {
+      message.reply(Helper.wrap(err));
+    });
   }
 }
 
 function getMusic(args, message) {
-  TrackHelper.getRandomVideo(args, 5).then(function(track) {
+  TrackHelper.getRandomTrack(args, 5).then(track => {
     message.reply(track.url);
-  })
+  }).catch(err => {
+    message.reply(Helper.wrap(err));
+  });
 }
 
 function countWordsByUser(args, message) {
@@ -98,11 +103,17 @@ function showHelp(args, message) {
     for (var command in commands) {
       if (command != '!help') {
         data = commands[command];
-        toReturn += command + ': ' + data.description + '\n';
+        toReturn += command + ': ' + data.description + getAvailableCommandAsText(data) + '\n';
       }
     }
   }
   message.reply(Helper.wrap(toReturn));
+}
+
+function getAvailableCommandAsText(command) {
+  if (!Helper.commandIsAvailable(command)) return ' (not available)';
+
+  return '';
 }
 
 function roll(content, message) {
@@ -123,9 +134,17 @@ function execute(content, message) {
 
   for (var command in commands) {
     if (command == commandToRun) {
-      commands[command].execute(getCommandArguments(args), message);
+      executeCommand(command, message, args);
     }
   }
+}
+
+function executeCommand(command, message, args) {
+  if (!Helper.commandIsAvailable(commands[command])) {
+    return message.reply(Helper.wrap('Command is not available.'));
+  }
+
+  commands[command].execute(getCommandArguments(args), message);
 }
 
 function getCommandArguments(args) {
@@ -138,17 +157,28 @@ function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function init() {
-  Helper.key('apikeys', 'discord').then(function(key) {
-    if (key == Helper.standardValues().discord) {
-      throw 'Discord api key not set, bot cannot load.';
-    }
+function registerService(service, affectedCommands) {
+  service = new service();
 
-    Bot.login(key);
-    Queue = new Queue();
-    TrackHelper = new TrackHelper();
-    WordService = new WordService();
-    WeatherService = new WeatherService();
+  if (affectedCommands) {
+    affectedCommands.forEach(command => {
+      var c = commands[command];
+      if (!c.services) c.services = [];
+      c.services.push(service);
+    });
+  }
+
+  return service;
+}
+
+function init() {
+  Helper.keys('apikeys', ['discord']).then(keys => {
+    Bot.login(keys.discord);
+
+    Queue = registerService(Queue, ['!queue', '!voteskip', '!song']);
+    TrackHelper = registerService(TrackHelper, ['!queue', '!music']);
+    WordService = registerService(WordService, ['!words']);
+    WeatherService = registerService(WeatherService, ['!weather']);
   }).catch(console.error);
 }
 

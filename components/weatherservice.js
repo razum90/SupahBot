@@ -5,13 +5,12 @@ var exports = {};
 
 module.exports = WeatherService = function() {
   var vm = this;
-  Helper.key('apikeys', 'openweathermap').then(function(val) {
-    if (val == Helper.standardValues().openweathermap) {
-      throw 'Weathermap api key not set, weather service cannot load.';
-    }
-
-    vm.apikey = val;
-  }).catch(console.error);
+  Helper.keys('apikeys', ['openweathermap']).then(function(keys) {
+    vm.apikey = keys.openweathermap;
+  }).catch(err => {
+    console.log(err);
+    vm.hasUnmetDepedencies = true;
+  });
 }
 
 WeatherService.prototype.getWeather = function(city, message) {
@@ -24,7 +23,7 @@ WeatherService.prototype.getWeather = function(city, message) {
 
 WeatherService.prototype.getWeatherForCity = function(city, message) {
   var vm = this;
-  request('http://api.openweathermap.org/data/2.5/weather?q=' + city + '&APPID=' + vm.apikey + '&units=metric', function(error, response, body) {
+  request('http://api.openweathermap.org/data/2.5/weather?q=' + city + '&APPID=' + vm.apikey + '&units=metric', (error, response, body) => {
     var weather = buildWeather(city, JSON.parse(body));
     message.reply(Helper.wrap(weather));
   });

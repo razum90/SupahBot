@@ -1,12 +1,12 @@
 {
-  "name": "discob0t",
+  "name": "Supah-Bot",
   "version": "1.0.0",
-  "description": "",
+  "description": "Cool playback bot with other awesome features.",
   "main": "Bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Rasmus Kockum",
   "license": "ISC",
   "dependencies": {
     "discord.js": "^10.0.1",

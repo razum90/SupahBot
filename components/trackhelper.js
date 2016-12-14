@@ -7,13 +7,13 @@ var Helper = require('./helper.js');
 var exports = {};
 
 module.exports = TrackHelper = function() {
-  Helper.key('apikeys', 'youtube').then(function(val) {
-    if (val == Helper.standardValues().youtube) {
-      throw 'Youtube api key not set, music service cannot load.';
-    }
-    
-    youTube.setKey(val);
-  }).catch(console.error);
+  var vm = this;
+  Helper.keys('apikeys', ['youtube']).then(function(keys) {
+    youTube.setKey(keys.youtube);
+  }).catch(err => {
+    console.log(err);
+    vm.hasUnmetDepedencies = true;
+  });
 }
 
 TrackHelper.prototype.getVideoFromUrl = function(url) {
@@ -25,8 +25,8 @@ TrackHelper.prototype.getVideoFromUrl = function(url) {
   });
 }
 
-TrackHelper.prototype.getRandomVideo = function(searchWord, amount) {
-  var videoList = [];
+TrackHelper.prototype.getRandomTrack = function(searchWord, amount) {
+  var trackList = [];
   var baseUrl = 'https://www.youtube.com/watch?v=';
 
   return new Promise(function(resolve, reject) {
@@ -36,16 +36,16 @@ TrackHelper.prototype.getRandomVideo = function(searchWord, amount) {
       result.items.forEach(function(item) {
         if (item.id.videoId) {
           var url = 'https://www.youtube.com/watch?v=' + item.id.videoId;
-          videoList.push(new Track(buildTrack(item, url)));
+          trackList.push(new Track(buildTrack(item, url)));
         }
       });
 
-      videoList = Helper.shuffle(videoList);
-      videoList.forEach(function(video) {
-        if (video && video.url && video.title) {
-          return resolve(video);
-        }
-      })
+      var track = Helper.shuffle(trackList).find(video => {
+        return video && video.url && video.title;
+      });
+
+      if (!track) return reject('No videos found from searchword ' + searchWord);
+      return resolve(track);
     });
   });
 }

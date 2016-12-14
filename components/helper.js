@@ -3,53 +3,72 @@ YAML = require('yamljs');
 var exports = {};
 var keystorePath = 'keystore.yml';
 
-exports.key = function(key, attribute) {
-  return new Promise(function(resolve, reject) {
-    keystore = YAML.load(keystorePath);
+var keystores = [
+  env,
+  yml
+];
+
+var standardValues = {
+  openweathermap: 'openweathermap api key',
+  discord: 'discord api key',
+  youtube: 'youtube api key'
+};
+
+function env(key, attributes) {
+  return new Promise((resolve, reject) => {
+    var prefix = 'MY_VAR_';
+    var toReturn = [];
+
+    attributes.forEach((attribute, index) => {
+      var attr = prefix + attribute.toUpperCase();
+
+      if (process.env.hasOwnProperty(attr) && process.env[attr]) {
+        toReturn[attribute] = process.env[attr];
+      } else {
+        reject(attribute + ' key not found.');
+      }
+
+      if ((index + 1) == attributes.length) {
+        resolve(toReturn);
+      }
+    });
+  });
+}
+
+function yml(key, attributes) {
+  return new Promise((resolve, reject) => {
+    var toReturn = [];
+    var keystore = YAML.load(keystorePath);
 
     if (keystore.hasOwnProperty(key)) {
-      parent = keystore[key];
+      var parent = keystore[key];
 
-      if (parent.hasOwnProperty(attribute)) {
-        resolve(parent[attribute]);
-      } else {
-        reject(attribute + ' not found in ' + key + '.');
-      }
-    } else {
-      reject(key + ' not found.');
+      attributes.forEach((attribute, index) => {
+        if (parent.hasOwnProperty(attribute) && parent[attribute] && attribute != standardValues[attribute]) {
+          toReturn[attribute] = parent[attribute];
+        } else {
+          reject(attribute + ' key not found.');
+        }
+
+        if ((index + 1) == attributes.length) {
+          resolve(toReturn);
+        }
+      });
     }
   });
 }
 
-exports.standardValues = function() {
-  return {
-    openweathermap: 'openweathermap api key',
-    discord: 'discord api key',
-    youtube: 'youtube api key'
-  };
-}
-
 exports.keys = function(key, attributes) {
-  var toReturn = [];
-
-  return new Promise(function(resolve, reject) {
-    keystore = YAML.load(keystorePath);
-
-    if (keystore.hasOwnProperty(key)) {
-      parent = keystore[key];
-
-      attributes.forEach(function(attribute) {
-        if (parent.hasOwnProperty(attribute)) {
-          toReturn[attribute] = parent[attribute];
-        } else {
-          reject(attribute + ' not found.');
+  return new Promise((resolve, reject) => {
+    keystores.forEach(get => {
+      get(key, attributes).then(values => {
+        resolve(values);
+      }).catch(err => {
+        if (keystores.indexOf(get) == keystores.length - 1) {
+          reject(err);
         }
       });
-    } else {
-      reject(key + ' not found.');
-    }
-
-    resolve(toReturn);
+    });
   });
 }
 
@@ -73,15 +92,16 @@ exports.shuffle = function(array) {
 }
 
 exports.getTotalMembers = function(channel) {
-  var membersLength = 0;
+  return channel.members.array().filter(member => {
+    return member.user.bot === false;
+  }).length;
+}
 
-  channel.members.array().forEach(function(member) {
-    if (!member.user.bot) {
-      membersLength++;
-    }
-  });
-
-  return membersLength;
+exports.commandIsAvailable = function(command) {
+  if (!command.services) return true;
+  return command.services.filter(service => {
+    return service.hasUnmetDepedencies === true;
+  }).length <= 0;
 }
 
 exports.wrap = function(text) {

@@ -1,5 +1,3 @@
-var YouTube = require('youtube-node');
-var youTube = new YouTube();
 var ytdl = require('ytdl-core');
 
 var exports = {};
@@ -10,9 +8,9 @@ module.exports = Track = function(video) {
   this.title = video.title;
 }
 
-Track.prototype.getStream = function() {
+Track.prototype.stream = function() {
   return ytdl(this.url, {
-    filter: function(format) {
+    filter: format => {
       return format.container === 'mp4';
     },
     quality: 'lowest'

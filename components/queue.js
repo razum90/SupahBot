@@ -9,9 +9,12 @@ module.exports = Queue = function() {
   vm.queue = [];
   vm.currentDispatcher = undefined;
 
-  Helper.keys('queue', ['maxlen', 'skipmajority']).then(function(values) {
-    vm.maxlen = values['maxlen'];
-    vm.skipmajority = values['skipmajority'];
+  Helper.keys('queue', ['maxlen', 'skipmajority']).then(values => {
+    vm.maxlen = values.maxlen;
+    vm.skipmajority = values.skipmajority;
+  }).catch(err => {
+    console.log(err);
+    vm.hasUnmetDepedencies = true;
   });
 }
 
@@ -25,19 +28,12 @@ Queue.prototype.add = function(track, message) {
   }
 }
 
-Queue.prototype.MAX_QUEUE_LENGTH = this.maxlen;
-
-Queue.prototype.getQueueLength = function() {
-  return this.queue.length;
-}
-
 Queue.prototype.isFull = function() {
   return this.queue.length >= this.maxlen;
 }
 
 Queue.prototype.play = function(message) {
   var vm = this;
-
   var channel = getAuthorVoiceChannel(message);
 
   if (!channel) {
@@ -46,29 +42,27 @@ Queue.prototype.play = function(message) {
   }
 
   var toPlay = vm.queue[0];
-
   if (!toPlay) {
     return message.reply(Helper.wrap('No songs in queue.'));
   }
 
   channel.join().then(connection => {
-    var stream = toPlay.getStream();
+    var stream = toPlay.stream();
 
     vm.currentDispatcher = connection.playStream(stream, {
       seek: 0,
       volume: 0.5
     });
 
-    vm.currentDispatcher.on('end', function(event) {
+    vm.currentDispatcher.on('end', event => {
       vm.remove(message);
     });
 
-    vm.currentDispatcher.on('error', function(err) {
+    vm.currentDispatcher.on('error', err => {
       vm.remove(message);
     });
 
     vm.skipVotes = [];
-
     message.channel.sendMessage(Helper.wrap('Now playing: ' + toPlay.title));
   }).catch(console.error);
 }
@@ -102,12 +96,8 @@ Queue.prototype.voteSkip = function(message) {
   if (vm.skipVotes.length / totalMembers >= vm.skipmajority) {
     this.currentDispatcher.end();
   } else {
-    var pronounciation = 'vote';
     var votesNeeded = getAmountOfVotesNeeded(totalMembers, vm.skipVotes.length, vm.skipmajority);
-    if (votesNeeded > 1) {
-      pronounciation = 'votes';
-    }
-    return message.reply(Helper.wrap('You need ' + votesNeeded + ' more ' + pronounciation + ' to skip this song.'));
+    return message.reply(Helper.wrap('You need ' + votesNeeded + ' more vote(s) to skip this song.'));
   }
 }
 
