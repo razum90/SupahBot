@@ -44,7 +44,7 @@ function yml(key, attributes) {
       var parent = keystore[key];
 
       attributes.forEach((attribute, index) => {
-        if (parent.hasOwnProperty(attribute) && parent[attribute] && attribute != standardValues[attribute]) {
+        if (parent.hasOwnProperty(attribute) && parent[attribute] && parent[attribute] != standardValues[attribute]) {
           toReturn[attribute] = parent[attribute];
         } else {
           reject(attribute + ' key not found.');
