@@ -8,7 +8,7 @@
 - !words - list the most common words used by a user, defaults to your user ```!words James```.
 - !queue - enter a youtube URL to queue or a search word ```!queue trance``` ```!queue https://www.youtube.com/watch?v=uaCF8Qqqb0w)```.
 - !voteskip - vote to skip the current song, skips depending on what your "skipmajority" field is set to in keystore.yml. Defaults
-to 0,5, 50% ```!voteskip```.
+to 0,5 (50%) ```!voteskip```.
 - !song - get info of the current song playing, if one is playing ```!song```.
 
 The preferred way to deploy this Bot is via Heroku. Using Heroku means that the bot doesn't run on your computer,
