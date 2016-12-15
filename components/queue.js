@@ -81,6 +81,10 @@ Queue.prototype.voteSkip = function(message) {
   var vm = this;
   var channel = getAuthorVoiceChannel(message);
 
+  if (!channel) {
+    return message.reply(Helper.wrap("You are not allowed to voteskip since you're not in the channel."));
+  }
+
   if (!vm.currentDispatcher) {
     return message.reply(Helper.wrap('No song is currently playing.'));
   }
