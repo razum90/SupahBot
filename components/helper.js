@@ -105,7 +105,7 @@ exports.commandIsAvailable = function(command) {
 }
 
 exports.wrap = function(text) {
-  return '```\n' + text.replace(/`/g, '`' + String.fromCharCode(8203)) + '\n```';
+  return '```' + text + '```';
 }
 
 exports.getRandomNumber = function(min, max) {
