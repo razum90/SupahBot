@@ -3,7 +3,7 @@
 ### This bot offers currently offers the following commands
 
 | Command         | Description                                          | Example           |
-| :-------------: |:----------------------------------------------------:| :----------------:|
+| :-------------: |:-----------------------------------------------------| :----------------:|
 | !music          | get a link to a youtube video matching your search   | `!music house`    |
 | !weather        | get current weather, defaults to Stockholm           | `!weather London` |
 | !roll           | roll from 1-100                                      | `!roll`           |
