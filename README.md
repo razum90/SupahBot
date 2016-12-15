@@ -69,8 +69,8 @@ heroku buildpacks: clear
 heroku buildpacks: add https://github.com/heroku/heroku-buildpack-nodejs
 heroku buildpacks: add https://github.com/issueapp/heroku-buildpack-ffmpeg
 ```
-- Add the config variables prefixed with MY_VAR_ and UPPERCASED:
-It's time to use the API keys that you **saved**:
+- Add the config variables prefixed with MY_VAR_ and UPPERCASED, it's time to use
+the API keys that you **saved**:
 ```
 heroku config:set MY_VAR_DISCORD=YOUR_DISCORD_TOKEN
 heroku config:set MY_VAR_OPENWEATHERMAP=YOUR_OPENWEATHERMAP_API_KEY
