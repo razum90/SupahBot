@@ -4,7 +4,7 @@
 
 | Command         | Description                                          | Example           |
 | :-------------: |:-----------------------------------------------------| :----------------:|
-| !music          | get a link to a youtube video matching your search   | `!music house`    |
+| !video          | get a link to a youtube video matching your search   | `!video funny`    |
 | !weather        | get current weather, defaults to Stockholm           | `!weather London` |
 | !roll           | roll from 1-100                                      | `!roll`           |
 | !help           | list all commands                                    | `!help`           |

@@ -7,9 +7,9 @@ var WordService = require('./components/wordservice.js');
 var WeatherService = require('./components/weatherservice.js');
 
 var commands = {
-  '!music': {
-    execute: getMusic,
-    description: 'get music of the given genre.'
+  '!video': {
+    execute: getVideo,
+    description: 'get a youtube video by search word'
   },
   '!weather': {
     execute: getWeather,
@@ -80,7 +80,7 @@ function doQueue(args, message) {
   }
 }
 
-function getMusic(args, message) {
+function getVideo(args, message) {
   TrackHelper.getRandomTrack(args, 5).then(track => {
     message.reply(track.url);
   }).catch(err => {
