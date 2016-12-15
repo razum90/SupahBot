@@ -1,18 +1,20 @@
 # Welcome to SupahBot.
 
 ### This bot offers currently offers the following commands
-- !music - get a link to a youtube video matching your search ```!music deep house```.
-- !weather - get current weather, defaults to Stockholm ```!weather London```.
-- !roll - roll from 1-100 ```!roll```.
-- !help - list all commands ```!help```.
-- !words - list the most common words used by a user, defaults to your user ```!words James```.
-- !queue - enter a youtube URL to queue or a search word ```!queue trance``` ```!queue https://www.youtube.com/watch?v=uaCF8Qqqb0w)```.
-- !voteskip - vote to skip the current song, skips depending on what your "skipmajority" field is set to in keystore.yml. Defaults
-to 0,5 (50%) ```!voteskip```.
-- !song - get info of the current song playing, if one is playing ```!song```.
+
+| Command         | Description                                          | Example           |
+| :-------------: |:----------------------------------------------------:| :----------------:|
+| !music          | get a link to a youtube video matching your search   | `!music house`    |
+| !weather        | get current weather, defaults to Stockholm           | `!weather London` |
+| !roll           | roll from 1-100                                      | `!roll`           |
+| !help           | list all commands                                    | `!help`           |
+| !words          | list the most common words by user, defaults to you  | `!words John`     |
+| !queue          | enter a youtube URL to queue or a search word        | `!queue house`    |
+| !voteskip       | vote to skip the current song                        | `!voteskip`       |
+| !song           | get the URL & title of the current song              | `!song`           |
 
 The preferred way to deploy this Bot is via Heroku. Using Heroku means that the bot doesn't run on your computer,
-is active 24/7 and you don't have to worry about the ffmpeg installation. Therefore this installation guide is
+is active 24/7 and you don't have to worry about the ffmpeg installation, which is messy. Therefore this installation guide is
 going to describe how to do it.
 
 Heroku is a service which provides servers and much, much more. Depending on your needs, the server (a.k.a. Dyno)
