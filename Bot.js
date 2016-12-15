@@ -163,8 +163,10 @@ function registerService(service, affectedCommands) {
   if (affectedCommands) {
     affectedCommands.forEach(command => {
       var c = commands[command];
-      if (!c.services) c.services = [];
-      c.services.push(service);
+      if (c) {
+        if (!c.services) c.services = [];
+        c.services.push(service);
+      }
     });
   }
 
@@ -176,7 +178,7 @@ function init() {
     Bot.login(keys.discord);
 
     Queue = registerService(Queue, ['!queue', '!voteskip', '!song']);
-    TrackHelper = registerService(TrackHelper, ['!queue', '!music']);
+    TrackHelper = registerService(TrackHelper, ['!queue', '!video']);
     WordService = registerService(WordService, ['!words']);
     WeatherService = registerService(WeatherService, ['!weather']);
   }).catch(console.error);
