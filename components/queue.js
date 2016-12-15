@@ -63,7 +63,7 @@ Queue.prototype.play = function(message) {
     });
 
     vm.skipVotes = [];
-    message.channel.sendMessage(Helper.wrap(':speaker: ' + toPlay.title));
+    message.channel.sendMessage(Helper.wrap('Now playing: ' + toPlay.title));
   }).catch(console.error);
 }
 
@@ -71,7 +71,7 @@ Queue.prototype.showSong = function(message) {
   var song = this.queue[0];
 
   if (song) {
-    return message.reply(Helper.wrap(':speaker: ' + song.title + '\n' + song.url));
+    return message.reply(Helper.wrap('Now playing: ' + song.title + '\n' + song.url));
   } else {
     return message.reply(Helper.wrap('No song is currently playing.'));
   }
