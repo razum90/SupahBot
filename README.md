@@ -1,6 +1,6 @@
 # Welcome to SupahBot.
 
-### This bot offers currently offers the following commands
+### This bot is written in combination with Discord.js.
 
 | Command         | Description                                          | Example           |
 | :-------------: |:-----------------------------------------------------| :----------------:|
