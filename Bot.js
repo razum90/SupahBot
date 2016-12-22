@@ -130,21 +130,16 @@ function isBotCommand(message) {
 
 function execute(content, message) {
   var args = content.split(" ");
-  var commandToRun = args[0];
-
-  for (var command in commands) {
-    if (command == commandToRun) {
-      executeCommand(command, message, args);
-    }
-  }
+  var command = commands[args[0]];
+  if (command) executeCommand(command, message, args);
 }
 
 function executeCommand(command, message, args) {
-  if (!Helper.commandIsAvailable(commands[command])) {
+  if (!Helper.commandIsAvailable(command)) {
     return message.reply(Helper.wrap('Command is not available.'));
   }
 
-  commands[command].execute(getCommandArguments(args), message);
+  command.execute(getCommandArguments(args), message);
 }
 
 function getCommandArguments(args) {
