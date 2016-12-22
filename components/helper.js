@@ -1,4 +1,4 @@
-YAML = require('yamljs');
+var YAML = require('yamljs');
 
 var exports = {};
 var keystorePath = 'keystore.yml';
