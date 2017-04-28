@@ -78,6 +78,7 @@ Queue.prototype.showSong = function(message) {
 }
 
 Queue.prototype.voteSkip = function(message) {
+  console.log(message);
   var vm = this;
   var channel = getAuthorVoiceChannel(message);
 
