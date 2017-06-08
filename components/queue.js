@@ -78,16 +78,12 @@ Queue.prototype.showSong = function(message) {
 }
 
 Queue.prototype.voteSkip = function(message) {
-  console.log(message);
   var vm = this;
   var channel = getAuthorVoiceChannel(message);
 
   if (!vm.currentDispatcher) {
     return message.reply(Helper.wrap('No song is currently playing.'));
   }
-
-  console.log("HÄR 2!!!!");
-  console.log(message.member.user.id);
 
   if (message.member.user.id === '234272258934308864') {
     this.currentDispatcher.end();
