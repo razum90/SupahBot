@@ -86,12 +86,10 @@ Queue.prototype.voteSkip = function(message) {
     return message.reply(Helper.wrap('No song is currently playing.'));
   }
 
-  console.log("HÄR!!!!");
-  console.log(message.member);
   console.log("HÄR 2!!!!");
-  console.log(message.member.user);
+  console.log(message.member.user.id);
 
-  if (message.member.user.id === 234272258934308864) {
+  if (message.member.user.id === '234272258934308864') {
     this.currentDispatcher.end();
     return message.reply(Helper.wrap('Of course sir.'));
   }
