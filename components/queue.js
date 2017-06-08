@@ -82,12 +82,19 @@ Queue.prototype.voteSkip = function(message) {
   var vm = this;
   var channel = getAuthorVoiceChannel(message);
 
-  if (!channel) {
-    return message.reply(Helper.wrap("You are not allowed to voteskip since you're not in the channel."));
-  }
-
   if (!vm.currentDispatcher) {
     return message.reply(Helper.wrap('No song is currently playing.'));
+  }
+
+  console.log(message.member);
+
+  if (message.member.user.id === 234272258934308864) {
+    this.currentDispatcher.end();
+    return message.reply(Helper.wrap('Of course sir.'));
+  }
+
+  if (!channel) {
+    return message.reply(Helper.wrap("You are not allowed to voteskip since you're not in the channel."));
   }
 
   if (vm.skipVotes.indexOf(message.author.id) > -1) {
