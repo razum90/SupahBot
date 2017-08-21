@@ -40,6 +40,8 @@ Creating these accounts will cost you **nothing** aswell, by the time writing th
   replacing "YOUR_CLIENT_ID" with the client ID copied
 - Join your server
 
+**NOTE: The bot can run without the weather and the playback service!**
+
 ### Step 2 (Recommended)
 To be able to use the music playback service you need to create a google developers account
 - Go to https://console.developers.google.com/ and create and account if you don't have one
@@ -53,7 +55,7 @@ To be able to use the weather service you need to create a openweathermap accoun
 - When created, navigate to API keys and create one
 - Save this key somewhere
 
-### Step 4 Deploy to Heroku
+### Step 4 Deploy to Heroku (Recommended)
 - In the terminal, place yourself in the directory where you cloned your fork of this repository
 - Login to heroku with the CLI:
 ```
