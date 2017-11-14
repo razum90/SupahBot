@@ -65,11 +65,10 @@ heroku login
 ```
 heroku create
 ```
-- Add the buildpacks under .buildpacks:
+- Add the buildpacks under .buildpacks, on https://dashboard.heroku.com/ head to Settings and add these:
 ```
-heroku buildpacks: clear
-heroku buildpacks: add https://github.com/heroku/heroku-buildpack-nodejs
-heroku buildpacks: add https://github.com/issueapp/heroku-buildpack-ffmpeg
+https://github.com/heroku/heroku-buildpack-nodejs
+https://github.com/issueapp/heroku-buildpack-ffmpeg
 ```
 - Add the config variables prefixed with MY_VAR_ and UPPERCASED, it's time to use
 the API keys that you **saved**:
