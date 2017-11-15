@@ -65,7 +65,8 @@ heroku login
 ```
 heroku create
 ```
-- Add the buildpacks under .buildpacks, on https://dashboard.heroku.com/ head to Settings and add these:
+- Add the buildpacks under .buildpacks. On https://dashboard.heroku.com/ head to the created server ->
+Settings and add these buildpacks on the Buildpacks section:
 ```
 https://github.com/heroku/heroku-buildpack-nodejs
 https://github.com/issueapp/heroku-buildpack-ffmpeg
