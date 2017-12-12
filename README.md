@@ -55,14 +55,14 @@ To be able to use the weather service you need to create a openweathermap accoun
 - When created, navigate to API keys and create one
 - Save this key somewhere
 
-### Deployment
+## Deployment
 
-## Easy way
+### Easy way
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/razum90/SupahBot/tree/master)
 
 After deploying, click manage apps and "Configure Dynos", and make sure "worker node Bot.js" is switched on.
 
-## Manual way
+### Manual way
 - In the terminal, place yourself in the directory where you cloned your fork of this repository
 - Login to heroku with the CLI:
 ```
