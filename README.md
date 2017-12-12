@@ -15,17 +15,12 @@
 
 The preferred way to deploy this Bot is via Heroku. Using Heroku means that the bot doesn't run on your computer,
 is active 24/7 and you don't have to worry about the ffmpeg installation, which is messy. Therefore this installation guide is
-going to describe how to do it. You can follow it and do it manually, or use the deploy-to-heroku button.
+going to describe how to do it. You can do the deployment manually, or use the deploy button.
 
 Heroku is a service which provides servers and much, much more. Depending on your needs, the server (a.k.a. Dyno)
 is free of charge the time writing this guide, it will cost you **nothing**.
 
-### Heroku deploy button
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/razum90/SupahBot/tree/master)
-
-After deploying, click manage apps and "Configure Dynos", and make sure "worker node Bot.js" is switched on.
-
-### Manual installation and deployment via Heroku
+### Install and deploy via Heroku
 - If you don't have a github account, create one and fork this repository - then clone it
 - If you don't have a Heroku account, create one and install Heroku CLI
 
@@ -60,7 +55,14 @@ To be able to use the weather service you need to create a openweathermap accoun
 - When created, navigate to API keys and create one
 - Save this key somewhere
 
-### Step 4 Deploy to Heroku (Recommended)
+### Deployment
+
+## Easy way
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/razum90/SupahBot/tree/master)
+
+After deploying, click manage apps and "Configure Dynos", and make sure "worker node Bot.js" is switched on.
+
+## Manual way
 - In the terminal, place yourself in the directory where you cloned your fork of this repository
 - Login to heroku with the CLI:
 ```
