@@ -1,0 +1,29 @@
+{
+  "name": "SupahBot",
+  "description": "Discord bot for music playback via youtube, and more.",
+  "repository": "https://github.com/razum90/SupahBot",
+  "logo": "https://node-js-sample.herokuapp.com/node.png",
+  "keywords": ["bot", "heroku", "music-playback", "discord", "javascript", "node", "youtube"],
+  "env": {
+    "MY_VAR_DISCORD": {
+      "description": "Discord token used to log in",
+      "required": true
+    },
+    "MY_VAR_OPENWEATHERMAP": {
+      "description": "Openweathermap API key",
+      "required": false
+    },
+    "MY_VAR_YOUTUBE": {
+      "description": "Google developers project API key",
+      "required": false
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-nodejs"
+    },
+    {
+      "url": "https://github.com/issueapp/heroku-buildpack-ffmpeg"
+    }
+  ]
+}
