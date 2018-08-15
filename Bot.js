@@ -176,6 +176,8 @@ function init() {
     TrackHelper = registerService(TrackHelper, ['!queue', '!video']);
     WordService = registerService(WordService, ['!words']);
     WeatherService = registerService(WeatherService, ['!weather']);
+
+    console.log("SupahBot started.");
   }).catch(console.error);
 }
 

@@ -9,12 +9,12 @@
   "author": "Rasmus Kockum",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^10.0.1",
+    "discord.js": "11.3.2",
     "ffmpeg": "0.0.4",
-    "node-opus": "^0.2.4",
-    "request": "^2.79.0",
-    "yamljs": "^0.2.8",
-    "youtube-node": "^1.3.0",
-    "ytdl-core": "^0.7.20"
+    "node-opus": "0.2.7",
+    "request": "2.85.0",
+    "yamljs": "0.3.0",
+    "youtube-node": "1.3.2",
+    "ytdl-core": "0.20.2"
   }
 }

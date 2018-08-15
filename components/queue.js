@@ -64,7 +64,7 @@ Queue.prototype.play = function(message) {
     });
 
     vm.skipVotes = [];
-    message.channel.sendMessage(Helper.wrap('Now playing: ' + toPlay.title));
+    message.channel.send(Helper.wrap('Now playing: ' + toPlay.title));
   }).catch(console.error);
 }
 
@@ -117,7 +117,7 @@ Queue.prototype.remove = function(message) {
   if (this.queue.length > 0) {
     this.play(message);
   } else {
-    message.channel.sendMessage(Helper.wrap('No more songs in queue.'));
+    message.channel.send(Helper.wrap('No more songs in queue.'));
   }
 }
 
