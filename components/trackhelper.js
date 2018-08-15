@@ -19,8 +19,8 @@ module.exports = TrackHelper = function() {
 TrackHelper.prototype.getVideoFromUrl = function(url) {
   return new Promise(function(resolve, reject) {
     ytdl.getInfo(url, (err, info) => {
-      if (err || !info) reject(err);
-      resolve(new Track(buildTrack(info, url)));
+      if (err || !info) return reject(err);
+      return resolve(new Track(buildTrack(info, url)));
     });
   });
 }
