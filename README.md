@@ -1,5 +1,3 @@
-# This bot is currently not working as expected, youtubes API has been updated and the libs here does not match. Please feel free to create a pull request for fixing it, as I have no time right now!
-
 # Welcome to SupahBot.
 
 ### This bot is written in combination with Discord.js.
