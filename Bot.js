@@ -1,40 +1,41 @@
-var Discord = require('discord.js');
-var Bot = new Discord.Client();
-var Helper = require('./components/helper.js');
-var Queue = require('./components/queue.js');
-var TrackHelper = require('./components/trackhelper.js');
-var WordService = require('./components/wordservice.js');
-var WeatherService = require('./components/weatherservice.js');
+let Discord = require('discord.js');
+let Bot = new Discord.Client();
+let Helper = require('./components/helper');
+let Queue = require('./components/queue');
+let TrackHelper = require('./components/trackhelper.js');
+let WordService = require('./components/wordservice.js');
+let WeatherService = require('./components/weatherservice.js');
 
-var commands = {
-  '!video': {
+let commandIdentificator = '!';
+let commands = {
+  video: {
     execute: getVideo,
     description: 'get a youtube video by search word'
   },
-  '!weather': {
+  weather: {
     execute: getWeather,
     description: 'get current weather for the given city, defaults to Stockholm'
   },
-  '!roll': {
+  roll: {
     execute: roll,
     description: 'roll from 1-100'
   },
-  '!help': {
+  help: {
     execute: showHelp
   },
-  '!words': {
+  words: {
     execute: countWordsByUser,
     description: 'get the most popular words for user of the given username, defaults to your username'
   },
-  '!queue': {
+  queue: {
     execute: doQueue,
     description: 'queue your song'
   },
-  '!voteskip': {
+  voteskip: {
     execute: voteSkip,
     description: 'vote to skip the current song'
   },
-  '!song': {
+  song: {
     execute: showSong,
     description: 'get the current song'
   }
@@ -99,13 +100,14 @@ function getWeather(args, message) {
 function showHelp(args, message) {
   var toReturn = 'No commands to run!';
   if (Object.keys(commands).length > 1) {
-    var toReturn = 'Available commands:\n';
-    for (var command in commands) {
-      if (command != '!help') {
-        data = commands[command];
-        toReturn += command + ': ' + data.description + getAvailableCommandAsText(data) + '\n';
-      }
-    }
+    toReturn = 'Available commands:\n'
+      .concat(Object.keys(commands)
+        .filter(command => command !== 'help')
+        .map(command => {
+          const data = commands[command];
+          return `${commandIdentificator}${command}: ${data.description}${getAvailableCommandAsText(data)}\n`;
+        })
+        .join(""))
   }
   message.reply(Helper.wrap(toReturn));
 }
@@ -121,16 +123,12 @@ function roll(content, message) {
 }
 
 function isBotCommand(message) {
-  if (message.content.startsWith('!') && message.author.id != Bot.user.id) {
-    return true;
-  }
-
-  return false;
+  return message.content.startsWith(commandIdentificator) && message.author.id != Bot.user.id;
 }
 
 function execute(content, message) {
   var args = content.split(" ");
-  var command = commands[args[0]];
+  var command = commands[args[0].replace(commandIdentificator, '')];
   if (command) executeCommand(command, message, args);
 }
 
@@ -169,16 +167,24 @@ function registerService(service, affectedCommands) {
 }
 
 function init() {
-  Helper.keys('apikeys', ['discord']).then(keys => {
-    Bot.login(keys.discord);
+  Helper.keys('command', ['id'])
+    .then(keys => {
+      commandIdentificator = keys.id;
+      console.log(`using ${commandIdentificator} as command identificator`);
+    })
+    .catch(console.log)
+  Helper.keys('apikeys', ['discord'])
+    .then(keys => {
+      Bot.login(keys.discord);
 
-    Queue = registerService(Queue, ['!queue', '!voteskip', '!song']);
-    TrackHelper = registerService(TrackHelper, ['!queue', '!video']);
-    WordService = registerService(WordService, ['!words']);
-    WeatherService = registerService(WeatherService, ['!weather']);
+      Queue = registerService(Queue, ['queue', 'voteskip', 'song']);
+      TrackHelper = registerService(TrackHelper, ['queue', 'video']);
+      WordService = registerService(WordService, ['words']);
+      WeatherService = registerService(WeatherService, ['weather']);
 
-    console.log("SupahBot started.");
-  }).catch(console.error);
+      console.log("SupahBot started.");
+    })
+    .catch(console.error);
 }
 
 init();

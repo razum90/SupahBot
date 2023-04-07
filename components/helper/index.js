@@ -1,14 +1,12 @@
-var YAML = require('yamljs');
+let YAML = require('yamljs');
 
-var exports = {};
-var keystorePath = 'keystore.yml';
-
-var keystores = [
+let keystorePath = 'keystore.yml';
+let keystores = [
   env,
   yml
 ];
 
-var standardValues = {
+let standardValues = {
   openweathermap: 'openweathermap api key',
   discord: 'discord api key',
   youtube: 'youtube api key'
@@ -16,20 +14,20 @@ var standardValues = {
 
 function env(key, attributes) {
   return new Promise((resolve, reject) => {
-    var prefix = 'MY_VAR_';
-    var toReturn = [];
+    let prefix = `MY_VAR_${key}_`.toUpperCase();
+    let toReturn = [];
 
     attributes.forEach((attribute, index) => {
-      var attr = prefix + attribute.toUpperCase();
+      let attr = prefix + attribute.toUpperCase();
 
       if (process.env.hasOwnProperty(attr) && process.env[attr]) {
         toReturn[attribute] = process.env[attr];
       } else {
-        reject(attribute + ' key not found.');
+        return reject(attribute + ' key not found.');
       }
 
       if ((index + 1) == attributes.length) {
-        resolve(toReturn);
+        return resolve(toReturn);
       }
     });
   });
@@ -37,43 +35,49 @@ function env(key, attributes) {
 
 function yml(key, attributes) {
   return new Promise((resolve, reject) => {
-    var toReturn = [];
-    var keystore = YAML.load(keystorePath);
+    let toReturn = [];
+    let keystore = module.exports.loadYaml();
 
     if (keystore.hasOwnProperty(key)) {
-      var parent = keystore[key];
+      let parent = keystore[key];
 
       attributes.forEach((attribute, index) => {
         if (parent.hasOwnProperty(attribute) && parent[attribute] && parent[attribute] != standardValues[attribute]) {
           toReturn[attribute] = parent[attribute];
         } else {
-          reject(attribute + ' key not found.');
+          return reject(attribute + ' key not found.');
         }
 
         if ((index + 1) == attributes.length) {
-          resolve(toReturn);
+          return resolve(toReturn);
         }
       });
+    } else {
+      return reject(`${key} not found`)
     }
   });
 }
 
-exports.keys = function(key, attributes) {
+module.exports.loadYaml = function() {
+  return YAML.load(keystorePath);
+}
+
+module.exports.keys = function(key, attributes) {
   return new Promise((resolve, reject) => {
     keystores.forEach(get => {
       get(key, attributes).then(values => {
-        resolve(values);
+        return resolve(values);
       }).catch(err => {
         if (keystores.indexOf(get) == keystores.length - 1) {
-          reject(err);
+          return reject(err);
         }
       });
     });
   });
 }
 
-exports.shuffle = function(array) {
-  var currentIndex = array.length, temporaryValue, randomIndex;
+module.exports.shuffle = function(array) {
+  let currentIndex = array.length, temporaryValue, randomIndex;
 
   // While there remain elements to shuffle...
   while (0 !== currentIndex) {
@@ -91,25 +95,23 @@ exports.shuffle = function(array) {
   return array;
 }
 
-exports.getTotalMembers = function(channel) {
+module.exports.getTotalMembers = function(channel) {
   return channel.members.array().filter(member => {
     return member.user.bot === false;
   }).length;
 }
 
-exports.commandIsAvailable = function(command) {
+module.exports.commandIsAvailable = function (command) {
   if (!command.services) return true;
   return command.services.filter(service => {
     return service.hasUnmetDepedencies === true;
   }).length <= 0;
 }
 
-exports.wrap = function(text) {
+module.exports.wrap = function (text) {
   return '```' + text + '```';
 }
 
-exports.getRandomNumber = function(min, max) {
+module.exports.getRandomNumber = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-
-module.exports = exports;

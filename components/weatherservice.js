@@ -1,7 +1,5 @@
 var request = require('request');
-var Helper = require('./helper.js');
-
-var exports = {};
+var Helper = require('./helper');
 
 module.exports = WeatherService = function() {
   var vm = this;

@@ -1,22 +1,24 @@
-var Helper = require('./helper.js');
-
-var exports = {};
+const Helper = require('../helper');
 
 module.exports = Queue = function() {
-  var vm = this;
+  let vm = this;
 
   vm.skipVotes = [];
   vm.queue = [];
   vm.currentDispatcher = undefined;
+  vm.admins = [];
 
-  Helper.keys('queue', ['maxlen', 'skipmajority']).then(values => {
-    vm.maxlen = values.maxlen;
-    vm.skipmajority = values.skipmajority;
-    vm.admins = ['234272258934308864'];
+  Helper.keys('queue', ['maxlen', 'skipmajority']).then(keys => {
+    vm.maxlen = parseInt(keys.maxlen);
+    vm.skipmajority = parseFloat(keys.skipmajority);
   }).catch(err => {
     console.log(err);
     vm.hasUnmetDepedencies = true;
   });
+
+  Helper.keys('admin', ['ids']).then(keys => {
+    vm.admins = keys.ids.split(',').map(id => id.trim())
+  }).catch(console.warn);
 }
 
 Queue.prototype.add = function(track, message) {
@@ -34,23 +36,21 @@ Queue.prototype.isFull = function() {
 }
 
 Queue.prototype.play = function(message) {
-  var vm = this;
-  var channel = getAuthorVoiceChannel(message);
+  let vm = this;
+  let channel = getAuthorVoiceChannel(message);
 
   if (!channel) {
     vm.queue = [];
     return message.reply(Helper.wrap('You are not in a voice channel.'));
   }
 
-  var toPlay = vm.queue[0];
+  let toPlay = vm.queue[0];
   if (!toPlay) {
     return message.reply(Helper.wrap('No songs in queue.'));
   }
 
   channel.join().then(connection => {
-    var stream = toPlay.stream();
-
-    vm.currentDispatcher = connection.playStream(stream, {
+    vm.currentDispatcher = connection.playStream(toPlay.stream(), {
       seek: 0,
       volume: 0.5
     });
@@ -60,6 +60,7 @@ Queue.prototype.play = function(message) {
     });
 
     vm.currentDispatcher.on('error', err => {
+      console.error(err);
       vm.remove(message);
     });
 
@@ -69,18 +70,18 @@ Queue.prototype.play = function(message) {
 }
 
 Queue.prototype.showSong = function(message) {
-  var song = this.queue[0];
+  let song = this.queue[0];
 
   if (song) {
-    return message.reply(Helper.wrap('Now playing: ' + song.title + '\n' + song.url));
+    return message.reply(Helper.wrap(`Now playing: ${song.title}\n${song.url}`));
   } else {
     return message.reply(Helper.wrap('No song is currently playing.'));
   }
 }
 
 Queue.prototype.voteSkip = function(message) {
-  var vm = this;
-  var channel = getAuthorVoiceChannel(message);
+  let vm = this;
+  let channel = getAuthorVoiceChannel(message);
 
   if (!vm.currentDispatcher) {
     return message.reply(Helper.wrap('No song is currently playing.'));
@@ -101,12 +102,12 @@ Queue.prototype.voteSkip = function(message) {
 
   vm.skipVotes.push(message.author.id);
 
-  var totalMembers = Helper.getTotalMembers(channel);
+  let totalMembers = Helper.getTotalMembers(channel);
 
   if (vm.skipVotes.length / totalMembers >= vm.skipmajority) {
     this.currentDispatcher.end();
   } else {
-    var votesNeeded = getAmountOfVotesNeeded(totalMembers, vm.skipVotes.length, vm.skipmajority);
+    let votesNeeded = getAmountOfVotesNeeded(totalMembers, vm.skipVotes.length, vm.skipmajority);
     return message.reply(Helper.wrap('You need ' + votesNeeded + ' more vote(s) to skip this song.'));
   }
 }
@@ -122,10 +123,10 @@ Queue.prototype.remove = function(message) {
 }
 
 function getAmountOfVotesNeeded(members, skipVotes, skipMajority) {
-  var needed = 0;
-  var skips = skipVotes;
+  let needed = 0;
+  let skips = skipVotes;
 
-  for (var i = 0; i < members; i++) {
+  for (let i = 0; i < members; i++) {
     if (skips / members < skipMajority) {
       skips++;
       needed++;
@@ -136,11 +137,14 @@ function getAmountOfVotesNeeded(members, skipVotes, skipMajority) {
 }
 
 function getAuthorVoiceChannel(message) {
-	var voiceChannelArray = message.guild.channels.filter((v) => v.type == 'voice').filter((v) => v.members.exists('id', message.author.id)).array();
+  let voiceChannelArray = message.guild.channels
+    .filter(channel => channel.type == 'voice')
+    .filter(channel => channel.members.some(member => member.id === message.author.id))
+    .array()
 
-	if(voiceChannelArray.length <= 0) {
-    return undefined;
+	if (voiceChannelArray.length <= 0) {
+    return undefined
   }
 
-	return voiceChannelArray[0];
+	return voiceChannelArray[0]
 }

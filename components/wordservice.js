@@ -1,6 +1,4 @@
-var Helper = require('./helper.js');
-
-var exports = {};
+var Helper = require('./helper');
 
 module.exports = WordService = function(video) {
   this.wordsByUser = {};

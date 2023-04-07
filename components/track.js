@@ -1,7 +1,5 @@
 var ytdl = require('ytdl-core');
 
-var exports = {};
-
 module.exports = Track = function(video) {
   this.video = video;
   this.url = video.url;

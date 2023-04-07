@@ -2,9 +2,7 @@ var YouTube = require('youtube-node');
 var youTube = new YouTube();
 var ytdl = require('ytdl-core');
 var Track = require('./track.js');
-var Helper = require('./helper.js');
-
-var exports = {};
+var Helper = require('./helper');
 
 module.exports = TrackHelper = function() {
   var vm = this;
@@ -27,11 +25,15 @@ TrackHelper.prototype.getVideoFromUrl = function(url) {
 
 TrackHelper.prototype.getRandomTrack = function(searchWord, amount) {
   var trackList = [];
-  var baseUrl = 'https://www.youtube.com/watch?v=';
 
   return new Promise(function(resolve, reject) {
     youTube.search(searchWord, amount, function(error, result) {
-      if (error) reject('No videos found.');
+      if (error) {
+        if (error.errors) {
+          return reject(error.errors[0].message);
+        }
+        return reject('No videos found.');
+      }
 
       result.items.forEach(function(item) {
         if (item.id.videoId) {
